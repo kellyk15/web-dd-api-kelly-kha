@@ -1,0 +1,91 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+
+const res = await fetch('https://pokeapi.co/api/v2/pokemon?limit=50')
+const data = await res.json()
+
+const pokemonWithSprites = await Promise.all(
+  data.results.map(async (pokemon) => {
+    const res = await fetch(pokemon.url)
+    const details = await res.json()
+
+    return {
+      name: pokemon.name,
+      image: details.sprites.front_default
+    }
+  })
+)
+---
+
+<MainLayout title="Kunstvangst">
+	<section class="generator">
+		<div>
+			<h1>Hoe voel jij je <em>vandaag</em>?</h1>
+			<p>Vang de kunst die je vandaag voelt!</p>
+			<button>Vang een kaart!</button>
+		</div>
+	</section>
+
+	<section>
+		<h2>Kaarten</h2>
+		<p>Hier zijn enkele kaarten die je hebt gevangen:</p>
+		<ul>
+			{pokemonWithSprites.map((pokemon) => (
+			<li>
+				<p>{pokemon.name}</p>
+				<img src={pokemon.image} />
+			</li>
+			))}
+		</ul>
+	</section>
+</MainLayout>
+
+<!-- ---
+import MainLayout from '../layouts/MainLayout.astro';
+
+const res = await fetch('https://pokeapi.co/api/v2/pokemon?limit=50')
+const pokemonData = await res.json()
+// const imageBase = 'https://pokeapi.co/api/v2/pokemon'
+// const imageEnd = '/{endpoint}/'
+
+const getIdFromUrl = (url) => {
+  const parts = url.split('/')
+  return parts[parts.length - 2]
+}
+
+console.log(pokemonData)
+
+---
+<MainLayout title="Catch of the day">
+	<ul>
+    {pokemonData.results.map((pokemon) => {
+      const id = getIdFromUrl(pokemon.url)
+      const image = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`
+
+      return (
+        <li>
+          <h2>{pokemon.name}</h2>
+          <img src={image} alt={pokemon.name} />
+        </li>
+      )
+    })}
+  </ul>
+</MainLayout> -->
+
+
+
+
+
+<!-- <html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="icon" href="/favicon.ico" />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="generator" content={Astro.generator} />
+		<title>Astro</title>
+	</head>
+	<body>
+		<h1>Astro</h1>
+	</body>
+</html> -->

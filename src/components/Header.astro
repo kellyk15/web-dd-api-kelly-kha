@@ -1,0 +1,116 @@
+---
+const currentPath = Astro.url.pathname;
+---
+
+<header>
+    <div>
+        <h1><em>Kunst</em>vangst</h1>
+        <button class="menu">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                </svg>
+        </button>
+    </div>
+    <nav>
+        <ul>
+            <li><a href="/" class={currentPath === '/' ? 'active' : ''}>Home</a></li>
+            <li><a href="/dog" class={currentPath === '/dog' ? 'active' : ''}>Cards</a></li>
+        </ul>
+    </nav>
+</header>
+
+<style>
+    body {
+        /* font-family: 'Helvetica', sans-serif; */
+        /* margin: 0;
+        padding: 0; */
+    }
+
+    header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1.5rem;
+        border-bottom: 1px solid var(--colour-gold);
+        /* background-color: #eadac0; */
+        /* box-shadow: 0 0px 10px rgba(73, 68, 63, 0.5); */
+
+        & h1 {
+            color: var(--colour-gold);
+            font-size: 1.5rem;
+            margin: 0;
+
+            font-family: 'Playfair Display', serif;
+            font-weight: 500;
+
+            & em {
+                color: var(--colour-red);
+            }
+        }
+
+        & a {
+            text-decoration: none;
+            font-size: var(--size-base);
+            color: var(--colour-background);
+            font-weight: bold;
+            padding: var(--size-xxs) var(--size-base);
+            box-shadow: 3px 3px var(--colour-text);
+
+            background-color: var(--colour-red);
+            display: inline-block;
+            transition: color 0.3s;
+
+            &:hover {
+                transform: translate(2px, 2px);
+                box-shadow: 0px 0px var(--colour-text);
+            }
+        }
+        
+        /* border-bottom: 1px solid var(--colour-text); */
+    }
+
+    nav ul {
+        list-style: none;
+        display: flex;
+        gap: var(--size-xs);
+    }
+
+    header a.active {
+        background-color: var(--colour-gold);
+    }
+
+</style>
+
+<script>
+    var deButton = document.querySelector(".menu");
+    var deNavigatie = document.querySelector("nav");
+
+    deButton.onclick = toggleMenu;
+
+    function toggleMenu() {
+        var deItems = document.querySelectorAll("nav ul li");
+        deNavigatie.classList.toggle("toonmenu");
+
+        if (deNavigatie.classList.contains("toonmenu")) {
+            deItems.forEach(function(item) {
+                item.classList.add("liAppear");
+            });
+        } else {
+            deItems.forEach(function(item) {
+                item.classList.remove("liAppear");
+            });
+        }
+    }
+
+    window.onkeydown = handleKeydown;
+
+    function handleKeydown(event) {
+        if (event.key == "Escape") {
+            var deItems = document.querySelectorAll("nav ul li");
+            deNavigatie.classList.remove("toonmenu");
+            deItems.forEach(function(item) {
+                item.classList.remove("liAppear");
+            });
+        }
+    }
+</script>
