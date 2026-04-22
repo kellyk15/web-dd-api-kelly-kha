@@ -1,0 +1,168 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+import Card from '../components/Card.astro';
+
+const moodToTypes = {
+  sad:     ['water', 'ice'],
+  happy:   ['electric', 'flying'],
+  unsure:  ['ghost', 'psychic'],
+  angry:   ['fire', 'fighting'],
+  content: ['fairy', 'normal'],
+  calm:    ['grass', 'ground'],
+};
+
+const res = await fetch('https://pokeapi.co/api/v2/pokemon?limit=151')
+const data = await res.json()
+
+const pokemonWithSprites = await Promise.all(
+  data.results.map(async (pokemon) => {
+    const res = await fetch(pokemon.url)
+    const details = await res.json()
+
+    return {
+      name: pokemon.name,
+      image: details.sprites.front_default,
+      types: details.types.map(t => t.type.name)
+    }
+  })
+)
+
+const moodPokemon = pokemonWithSprites
+    .filter(pokemon => pokemon.types.some(type => moodToTypes['happy'].includes(type)))
+    .sort(() => Math.random() - 0.5)[0];
+
+const name = Astro.url.searchParams.get('name') ?? 'Trainer';
+---
+
+<MainLayout title="Kunstvangst">
+  <Card />
+  
+  <div class="results-container">
+    <h1>Jouw <em>resultaten</em></h1>
+      <section class="results">
+          <p> Hallo, {name}! <br>Op basis van jouw stemming hebben we de volgende dingen voor je gevangen:</p>
+          <!-- <ul>
+              {pokemonWithSprites
+                  .filter(pokemon => pokemon.types.some(type => moodToTypes['happy'].includes(type)))
+                  .map(pokemon => (
+                      <li>
+                          <img src={pokemon.image} alt={pokemon.name} />
+                          <p>{pokemon.name}</p>
+                      </li>
+                  ))}
+          </ul> -->
+
+          <!-- <ul>
+              {pokemonWithSprites
+                  .filter(pokemon => pokemon.types.some(type => moodToTypes['happy'].includes(type)))
+                  .sort(() => Math.random() - 0.5)
+                  .slice(0, 1)
+                  .map(pokemon => (
+                      <li>
+                          <img src={pokemon.image} alt={pokemon.name} />
+                          <p>{pokemon.name}</p>
+                      </li>
+                  ))}
+          </ul> -->
+
+          <div class="pokemon-div">
+              {moodPokemon && (
+                  <div>
+                      <img src={moodPokemon.image} alt={moodPokemon.name} />
+                      <p>{moodPokemon.name}</p>
+                  </div>
+              )}
+          </div>
+      </section>
+  </div>
+</MainLayout>
+
+<style>
+  .results-container {
+    width: 50vw;
+    margin-left: auto;
+    padding: 1.5rem;
+
+    display: flex;
+    flex-direction: column;
+    text-align: right;
+    align-items: flex-end;
+    justify-content: right;
+  }
+
+  h1 {
+    font-size: var(--size-3xl);
+    font-weight: 600;
+
+    & em {
+      color: var(--colour-red);
+      }
+  }
+
+  .results {
+    width: 100%;
+    border-radius: 8px;
+
+    /* & ul {
+        margin-top: var(--size-2xl);
+        display: flex;
+        justify-content: right;
+        flex-direction: row;
+        flex-wrap: wrap;
+        
+        gap: var(--size-base);
+        align-items: center;
+
+        
+        & li{
+            list-style: none;
+            text-align: center;
+            padding: var(--size-xs);
+            border-radius: var(--size-xxs);
+            border: 1px solid transparent;
+    
+            background-color: var(--colour-off-white);
+            width: fit-content;
+            transition: border 0.3s, scale 0.3s;
+
+            &:hover{
+                border: 1px solid var(--colour-gold);
+                scale: 1.05;
+            }
+        }
+    } */
+
+    & .pokemon-div {
+        margin-top: var(--size-2xl);
+        display: flex;
+        justify-content: right;
+        flex-direction: row;
+        flex-wrap: wrap;
+        
+        gap: var(--size-base);
+        align-items: center;
+
+        & div{
+            list-style: none;
+            text-align: center;
+            padding: var(--size-xs);
+            border-radius: var(--size-xxs);
+            border: 1px solid transparent;
+    
+            background-color: var(--colour-off-white);
+            width: fit-content;
+            transition: border 0.3s, scale 0.3s;
+
+            &:hover{
+                border: 1px solid var(--colour-gold);
+                scale: 1.05;
+            }
+        }
+    }
+  }
+</style>
+
+<script>
+    
+</script>
+

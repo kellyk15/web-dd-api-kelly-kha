@@ -1,0 +1,33 @@
+---
+import MainLayout from '../../layouts/MainLayout.astro';
+
+const res = await fetch('https://pokeapi.co/api/v2/pokemon?limit=50')
+const data = await res.json()
+
+const pokemonWithSprites = await Promise.all(
+  data.results.map(async (pokemon) => {
+    const res = await fetch(pokemon.url)
+    const details = await res.json()
+
+    return {
+      name: pokemon.name,
+      image: details.sprites.front_default
+    }
+  })
+)
+---
+
+<MainLayout title="Kunstvangst">
+	<section class="collection">
+		<h2>Jouw <em>collectie</em></h2>
+		<p>Hier zijn enkele kaarten die je hebt gevangen</p>
+		<ul>
+			{pokemonWithSprites.map((pokemon) => (
+			<li>
+				<img src={pokemon.image} />
+				<p>{pokemon.name}</p>
+			</li>
+			))}
+		</ul>
+	</section>
+</MainLayout>

@@ -13,8 +13,8 @@ const currentPath = Astro.url.pathname;
     </div>
     <nav>
         <ul>
-            <li><a href="/" class={currentPath === '/' ? 'active' : ''}>Home</a></li>
-            <li><a href="/dog" class={currentPath === '/dog' ? 'active' : ''}>Cards</a></li>
+            <li><a href="/" class={currentPath === '/' ? 'active' : ''}>home</a></li>
+            <li><a href="/cards" class={currentPath === '/cards' ? 'active' : ''}>cards</a></li>
         </ul>
     </nav>
 </header>
@@ -32,6 +32,10 @@ const currentPath = Astro.url.pathname;
         align-items: center;
         padding: 1.5rem;
         border-bottom: 1px solid var(--colour-gold);
+        position: sticky;
+        top: 0;
+        background-color: var(--colour-background);
+        z-index: 10;
         /* background-color: #eadac0; */
         /* box-shadow: 0 0px 10px rgba(73, 68, 63, 0.5); */
 
@@ -52,13 +56,14 @@ const currentPath = Astro.url.pathname;
             text-decoration: none;
             font-size: var(--size-base);
             color: var(--colour-background);
-            font-weight: bold;
+            font-family: 'DM Mono', serif;
+            font-weight: lighter;
             padding: var(--size-xxs) var(--size-base);
             box-shadow: 3px 3px var(--colour-text);
 
             background-color: var(--colour-red);
             display: inline-block;
-            transition: color 0.3s;
+            transition: color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
 
             &:hover {
                 transform: translate(2px, 2px);
@@ -76,7 +81,7 @@ const currentPath = Astro.url.pathname;
     }
 
     header a.active {
-        background-color: var(--colour-gold);
+        background-color: #c9838c ;
     }
 
 </style>

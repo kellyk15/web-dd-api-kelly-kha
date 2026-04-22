@@ -1,0 +1,228 @@
+---
+export const prerender = false;
+
+import MainLayout from '../layouts/MainLayout.astro';
+
+const moodToTypes = {
+  sad:     ['water', 'ice'],
+  happy:   ['electric', 'flying'],
+  unsure:  ['ghost', 'psychic'],
+  angry:   ['fire', 'fighting'],
+  content: ['fairy', 'normal'],
+  calm:    ['grass', 'ground'],
+};
+
+/* ── POKEMON ── */
+const pokeRes = await fetch('https://pokeapi.co/api/v2/pokemon?limit=50')
+const pokeData = await pokeRes.json()
+
+const pokemonWithSprites = await Promise.all(
+  pokeData.results.map(async (pokemon) => {
+    const res = await fetch(pokemon.url)
+    const details = await res.json()
+
+    return {
+      name: pokemon.name,
+      image: details.sprites.front_default,
+      types: details.types.map(t => t.type.name)
+    }
+  })
+)
+
+/* ── TMDB ── */
+const apiKey = import.meta.env.TMDB_API_KEY;
+
+const tmdbRes = await fetch(
+  `https://api.themoviedb.org/3/movie/popular?api_key=${apiKey}&language=nl-NL`
+);
+const tmdbData = await tmdbRes.json();
+const movies = tmdbData.results;
+---
+
+<MainLayout title="Kunstvangst">
+	<section class="photobooth-container">
+        <div class="photobooth-header">
+            <h1><em>Take a </em>photo</h1>
+            <button class="button-close button-class">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+
+        <div class="photobooth-div">
+            <video class="player"></video>
+            <div>
+                <h1>FILTERS</h1>
+                <button class="button-class">no filter</button>
+                <button class="button-class">b&w</button>
+                <button class="button-class">sepia</button>
+                <button class="button-capture button-class">Neem een foto!</button>
+            </div>
+        </div>
+
+    </section>
+
+    <div class="popup">
+        <div class="popup-inner">
+            <img class="popup-foto" src="" alt="Foto" />
+            <button class="popup-sluiten">Sluiten</button>
+        </div>
+    </div>
+</MainLayout>
+
+<style>
+    .popup {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.7);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 100;
+        visibility: hidden;
+        pointer-events: none;
+    }
+
+    .popup.actief {
+        visibility: visible;
+        pointer-events: all;
+    }
+
+    .popup-inner {
+        background: white;
+        padding: 1rem;
+        border-radius: 8px;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        align-items: center;
+    }
+
+    .popup-inner img {
+        max-width: 90vw;
+        max-height: 80vh;
+    }
+
+    .player {
+        transform: scaleX(-1);
+        width: 50vw;
+    }
+
+    .button-close {
+        height: 2.5rem;
+        width: 2.5rem;
+        cursor: pointer;
+        padding: var(--size-xxs);
+
+        & svg {
+            width: 100%;
+            height: 100%;
+        }
+    }
+    
+    .photobooth-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+
+        font-weight: 500;
+
+        & h1 {
+            font-size: var(--size-4xl);
+            color: var(--colour-gold);
+
+            & em {
+                color: var(--colour-red);
+            }
+        }
+    }
+
+    .photobooth-div {
+        display: flex;
+        width: 100%;
+        justify-content: flex-start;
+        gap: 2rem;
+
+        & video {
+            border-radius: 8px;
+        }
+
+        & div {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+
+            & h1 {
+                font-size: var(--size-2xl);
+                color: var(--colour-gold);
+                font-weight: 500;
+            }
+        }
+    }
+
+</style>
+
+<script>
+    // https://codepen.io/pandaa/pen/OJNVgYp?editors=0010
+
+    const video = document.querySelector(".player");
+    const canvas = document.createElement("canvas");
+    const takePhotoBtn = document.querySelector(".button-capture");
+    const popup = document.querySelector(".popup");
+    const popupFoto = document.querySelector(".popup-foto");
+    const popupSluiten = document.querySelector(".popup-sluiten");
+
+    let mediastream = null;
+
+    function getVideo() {
+        navigator.mediaDevices
+            .getUserMedia({ video: true, audio: false })
+            .then((localMediaStream) => {
+                mediastream = localMediaStream;
+                video.srcObject = mediastream;
+                video.play();
+            })
+            .catch((err) => {
+                console.error("Webcam Access Denied", err);
+                alert("Webcam Access Denied");
+            });
+    }
+    getVideo();
+
+    function takePhoto() {
+        const width = video.videoWidth || video.offsetWidth;
+        const height = video.videoHeight || video.offsetHeight;
+        canvas.width = width;
+        canvas.height = height;
+
+        const ctx = canvas.getContext("2d");
+        ctx.translate(width, 0);
+        ctx.scale(-1, 1);
+        ctx.drawImage(video, 0, 0, width, height);
+
+        const data = canvas.toDataURL("image/jpeg");
+        popupFoto.src = data;
+        popup.classList.add("actief");
+    }
+
+    takePhotoBtn.addEventListener("click", takePhoto); 
+    popupSluiten.addEventListener("click", () => {
+        popup.classList.remove("actief");
+    });
+
+
+    // Testen of we toegang hebben tot de webcam
+    // console.log("asking");
+    // navigator.mediaDevices
+    // .getUserMedia({ audio: false, video: true })
+    // .then((stream) => {
+    //     console.log("ok");
+    //     console.log(stream);
+    // })
+    // .catch((err) => {
+    //     console.log(err);
+    // });
+</script>
+

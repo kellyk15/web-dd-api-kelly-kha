@@ -1,20 +1,38 @@
 ---
+export const prerender = false;
+
 import MainLayout from '../layouts/MainLayout.astro';
 
-const res = await fetch('https://pokeapi.co/api/v2/pokemon?limit=50')
-const data = await res.json()
+const moodToTypes = {
+  sad:     ['water', 'ice'],
+  happy:   ['electric', 'flying'],
+  unsure:  ['ghost', 'psychic'],
+  angry:   ['fire', 'fighting'],
+  content: ['fairy', 'normal'],
+  calm:    ['grass', 'ground'],
+};
 
-const pokemonWithSprites = await Promise.all(
-  data.results.map(async (pokemon) => {
-    const res = await fetch(pokemon.url)
-    const details = await res.json()
+/* ── POKEMON ── */
+const pokeRes = await fetch('https://pokeapi.co/api/v2/pokemon?limit=50')
+const pokeData = await pokeRes.json()
 
-    return {
-      name: pokemon.name,
-      image: details.sprites.front_default
-    }
-  })
-)
+const pokemonWithSprites = pokeData.results.map((pokemon, index) => {
+  const id = index + 1
+  return {
+    name: pokemon.name,
+    image: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`,
+    types: []
+  }
+})
+
+/* ── TMDB ── */
+const apiKey = import.meta.env.TMDB_API_KEY;
+
+const tmdbRes = await fetch(
+  `https://api.themoviedb.org/3/movie/popular?api_key=${apiKey}&language=nl-NL`
+);
+const tmdbData = await tmdbRes.json();
+const movies = tmdbData.results;
 ---
 
 <MainLayout title="Kunstvangst">
@@ -22,23 +40,64 @@ const pokemonWithSprites = await Promise.all(
 		<div>
 			<h1>Hoe voel jij je <br> <em>vandaag</em>?</h1>
 			<p>Vang de kunst die je vandaag voelt!</p>
-			<button>Vang een kaart!</button>
+		</div>
+		
+		<div>
+			<form action="/results" method="GET">
+				<fieldset>
+					<legend></legend>
+					<label for="name">JOUW NAAM
+                        <input id="name" name="name" type="text" required>
+                    </label>
+
+					<label for="mood"> JOUW STEMMING
+						<select name="mood" id="mood">
+							<option value="neutral">- Kies een stemming -</option>
+							<option value="happy">Blij</option>
+							<option value="sad">Verdrietig</option>
+							<option value="angry">Boos</option>
+							<option value="unsure">Onzeker</option>
+							<option value="content">Tevreden</option>
+							<option value="calm">Rustig</option>
+						</select>
+					</label>
+				</fieldset>
+			
+				<button id="catch-button">VANG EEN KAART</button>
+			</form>
 		</div>
 	</section>
 
-	<section>
-		<h2>Kaarten</h2>
-		<p>Hier zijn enkele kaarten die je hebt gevangen:</p>
+	<section class="collection">
+		<h2>Jouw <em>collectie</em></h2>
+		<p>Hier zijn enkele kaarten die je hebt gevangen</p>
 		<ul>
 			{pokemonWithSprites.map((pokemon) => (
 			<li>
-				<p>{pokemon.name}</p>
 				<img src={pokemon.image} />
+				<p>{pokemon.name}</p>
+				{/* <p>{pokemon.types.join(", ")}</p> */}
+			</li>
+			))}
+		</ul>
+
+		<ul>
+			{movies.map((movie) => (
+			<li>
+				<img
+				src={`https://image.tmdb.org/t/p/w200${movie.poster_path}`}
+				alt={movie.title}
+				/>
+				<p>{movie.title}</p>
 			</li>
 			))}
 		</ul>
 	</section>
 </MainLayout>
+
+<script>
+	
+</script>
 
 <!-- ---
 import MainLayout from '../layouts/MainLayout.astro';

@@ -1,0 +1,261 @@
+---
+const currentPath = Astro.url.pathname;
+---
+<div class="id-card-container">
+    <div class="id-card-touw"></div>
+    <div class="id-card-content">
+        <div class="id-card-content-top">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+
+        <div class="id-card-content-bottom">
+            <div class="id-card-content-bottom-img"></div>
+            <div class="id-card-content-bottom-info">
+                <div>
+                    <p><em>Name.</em></p>
+                    <h1>Kelly</h1>  
+                </div>
+                <!-- <div>
+                    <p><em>Trainer ID.</em></p>
+                    <h2>123456789</h2>
+                </div> -->
+                <div>
+                    <p><em>Pokemon.</em></p>
+                    <h2>Snorlax</h2> 
+                </div>
+                <div>
+                    <p><em>Painting.</em></p>
+                    <h2>Starry Night</h2> 
+                </div>
+                <div>
+                    <p><em>Movie.</em></p>
+                    <h2>Project hail mary</h2> 
+                </div>
+            </div>
+        </div>
+
+        <div class="id-card-content-bottom-info-2">
+            <p>&lt;&lt; trainer &lt;&lt;&lt;&lt; 15-04-2026 &lt;&lt;&lt;&lt;&lt;</p>
+        </div>
+    </div>
+
+</div>
+
+<style>
+    /* .id-card-container {
+        width: 200px;
+        border-radius: 8px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        margin-left: 3rem;
+
+        & .id-card-touw {
+            width: 30px;
+            height: 100px;
+            background-color: var(--colour-red);
+        }
+
+        & .id-card-content {
+            width: 90%;
+            height: 100%;
+            background-color: var(--colour-gold);
+            border: 1px solid var(--colour-gold);
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 1rem 1rem 1rem;
+
+            & .id-card-content-top {
+                width: 100%;
+                height: 30px;
+                display: flex;
+                gap: 5px;
+                justify-content: center;
+                align-items: center;
+
+
+                & span {
+                    display: block;
+                    width: 10px;
+                    height: 10px;
+                    background-color: #a28126;
+                    
+                    border-radius: 100%;
+                }
+            }
+
+            & .id-card-content-bottom{
+                width: 100%;
+                height: 100px;
+                background-color: var(--colour-background);
+                border-radius: 4px;
+            }
+        }
+    } */
+
+    .id-card-container {
+        z-index: 10;
+        position: absolute;
+        top: -70px;
+        width: 600px; /* 200 × 2.5 */
+        border-radius: 20px; /* 8 × 2.5 */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        transform-origin: top center;
+        animation: slidefromtop 1s both var(--ease-back-out);
+
+        margin-left: 7.5rem; /* 3 × 2.5 */
+
+        & .id-card-touw {
+            width: 75px; /* 30 × 2.5 */
+            height: 250px; /* 100 × 2.5 */
+            background-color: #c6491c;
+            background: linear-gradient(128deg, rgba(214, 115, 79, 1) 0%, rgba(196, 73, 28, 1) 57%, rgba(182, 70, 28, 1) 95%);
+            position: relative;
+
+            &::after {
+                content: '';
+                position: absolute;
+                bottom: -1px;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 95px;
+                height: 35px;
+                background: #cccccc;
+                border-radius: 6px 6px 0 0;
+                box-shadow: inset 0 -4px 8px rgba(0, 0, 0, 0.2);
+            }
+        }
+
+        & .id-card-content {
+            width: 90%;
+            height: 100%;
+            background-color: #f7b900;
+            border: 2.5px solid #f7b900;
+            box-shadow: 0 8px 0 #c99300, 0 12px 20px rgba(0, 0, 0, 0.25);
+            border-radius: 20px; /* 8 × 2.5 */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 1.5rem 0 1.5rem; /* 1rem × 2.5 */
+
+            & .id-card-content-top {
+                width: 100%;
+                height: 50px; /* 30 × 2.5 */
+                display: flex;
+                gap: 15px; /* 5 × 2.5 */
+                justify-content: center;
+                align-items: center;
+
+                & span {
+                    display: block;
+                    width: 10px;
+                    height: 10px; 
+                    background-color: #c99300;
+                    border-radius: 100%;
+                }
+            }
+
+            & .id-card-content-bottom {
+                width: 100%;
+                height: 300px; /* 100 × 2.5 */
+                background-color: var(--colour-background);
+                border-radius: 10px; /* 4 × 2.5 */
+                display: flex;
+                gap: var(--size-2xl); 
+                padding: var(--size-base);
+
+                & .id-card-content-bottom-img {
+                    aspect-ratio: 3 / 4;
+                    height: 100%;
+                    background-color: #B6461C;
+                    border-radius: 10px; /* 4 × 2.5 */
+                }
+
+                & .id-card-content-bottom-info {
+                    display: flex;
+                    justify-content: space-around;
+                    flex-direction: column;
+                    gap: 10px;
+                    font-family: 'DM Mono', monospace;
+
+                    & h1 {
+                        font-size: 1.2rem;
+                        font-weight: bold;
+                        color: #333333;
+                    }
+
+                    & h2 {
+                        font-size: 1.2rem;
+                        font-weight: 600;
+                        color: #333333;
+                    }
+
+                    & p {
+                        font-size: 1rem;
+                        color: #666666;
+                    }
+                }
+                
+            }
+        }
+
+        .id-card-content-bottom-info-2{
+            height: 50px;
+            display: flex;
+            align-items: center;
+
+            & p {
+                font-size: 1.35rem;
+                font-weight: bold;
+                color: #c99300;
+            }
+        }
+    }
+
+    .mood-sad .id-card-content {
+        background-color: #5378b4;
+        border: 2.5px solid #5378b4;
+        box-shadow: 0 8px 0 #1e3b6a, 0 12px 20px rgba(0, 0, 0, 0.25);
+        
+        & .id-card-content-top span{
+            background-color: #1e3b6a;
+        }
+
+        & .id-card-content-bottom-info-2 p {
+            color: #1e3b6a;
+        }
+    }
+
+    .mood-sad .id-card-touw {
+        background: linear-gradient(128deg,
+            rgba(145, 166, 199, 1) 0%,
+            rgba(83, 120, 180, 1) 31%,
+            rgba(30, 59, 106, 1) 95%
+        );
+    }
+
+    @keyframes slidefromtop {
+        0% {
+            transform: translateX(-100%);
+            rotate: 90deg;
+        }
+        100% {
+            transform: translateX(0);
+            rotate: 0deg;
+        }
+    }
+</style>
