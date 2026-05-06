@@ -3,31 +3,31 @@ export const prerender = false;
 
 import MainLayout from '../layouts/MainLayout.astro';
 
-const moodToTypes = {
-  sad:     ['water', 'ice'],
-  happy:   ['electric', 'flying'],
-  unsure:  ['ghost', 'psychic'],
-  angry:   ['fire', 'fighting'],
-  content: ['fairy', 'normal'],
-  calm:    ['grass', 'ground'],
-};
+// const moodToTypes = {
+//   sad:     ['water', 'ice'],
+//   happy:   ['electric', 'flying'],
+//   unsure:  ['ghost', 'psychic'],
+//   angry:   ['fire', 'fighting'],
+//   content: ['fairy', 'normal'],
+//   calm:    ['grass', 'ground'],
+// };
 
-/* ── POKEMON ── */
-const pokeRes = await fetch('https://pokeapi.co/api/v2/pokemon?limit=50')
-const pokeData = await pokeRes.json()
+// /* ── POKEMON ── */
+// const pokeRes = await fetch('https://pokeapi.co/api/v2/pokemon?limit=50')
+// const pokeData = await pokeRes.json()
 
-const pokemonWithSprites = await Promise.all(
-  pokeData.results.map(async (pokemon) => {
-    const res = await fetch(pokemon.url)
-    const details = await res.json()
+// const pokemonWithSprites = await Promise.all(
+//   pokeData.results.map(async (pokemon) => {
+//     const res = await fetch(pokemon.url)
+//     const details = await res.json()
 
-    return {
-      name: pokemon.name,
-      image: details.sprites.front_default,
-      types: details.types.map(t => t.type.name)
-    }
-  })
-)
+//     return {
+//       name: pokemon.name,
+//       image: details.sprites.front_default,
+//       types: details.types.map(t => t.type.name)
+//     }
+//   })
+// )
 
 /* ── TMDB ── */
 const apiKey = import.meta.env.TMDB_API_KEY;
@@ -43,21 +43,24 @@ const movies = tmdbData.results;
 	<section class="photobooth-container">
         <div class="photobooth-header">
             <h1><em>Take a </em>photo</h1>
-            <button class="button-close button-class">
+            <a href="/results" class="button-close button-class">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
                 </svg>
-            </button>
+            </a>
         </div>
 
         <div class="photobooth-div">
             <video class="player"></video>
-            <div>
+            <div class="photobooth-buttons-container">
                 <h1>FILTERS</h1>
-                <button class="button-class">no filter</button>
-                <button class="button-class">b&w</button>
-                <button class="button-class">sepia</button>
-                <button class="button-capture button-class">Neem een foto!</button>
+                
+                <div class="photobooth-buttons">
+                    <button class="button-class">no filter</button>
+                    <button class="button-class">grayscale</button>
+                    <button class="button-class">sepia</button>
+                    <button class="button-capture button-class">Neem een foto!</button>
+                </div>
             </div>
         </div>
 
@@ -66,7 +69,13 @@ const movies = tmdbData.results;
     <div class="popup">
         <div class="popup-inner">
             <img class="popup-foto" src="" alt="Foto" />
-            <button class="popup-sluiten">Sluiten</button>
+            <div class="popup-buttons">
+                <a href="#" class="popup-opnieuw button-class">Opnieuw</a>
+                <a class="popup-gebruiken button-class">Gebruik foto</a>
+
+                <!-- <button class="popup-gebruiken">Gebruik foto</button>
+                <button class="popup-opnieuw">Opnieuw</button> -->
+            </div>
         </div>
     </div>
 </MainLayout>
@@ -90,9 +99,10 @@ const movies = tmdbData.results;
     }
 
     .popup-inner {
-        background: white;
-        padding: 1rem;
-        border-radius: 8px;
+        background: var(--colour-background);
+        /* border: 2px solid var(--colour-gold); */
+        padding: 2rem;
+        /* border-radius: 8px; */
         display: flex;
         flex-direction: column;
         gap: 1rem;
@@ -149,7 +159,7 @@ const movies = tmdbData.results;
             border-radius: 8px;
         }
 
-        & div {
+        & .photobooth-buttons-container{
             display: flex;
             flex-direction: column;
             gap: 1rem;
@@ -159,28 +169,119 @@ const movies = tmdbData.results;
                 color: var(--colour-gold);
                 font-weight: 500;
             }
+
+            width: 100%;
         }
     }
+
+    .popup-buttons {
+        display: flex;
+        gap: 1rem;
+
+        & a{
+            text-decoration: none;
+            text-align: center;
+            padding: var(--size-xs) var(--size-base);
+            width: fit-content;
+            cursor: pointer;
+            
+
+            &:nth-of-type(1) {
+                background-color: var(--colour-gold);
+            }
+        }
+    }
+
+    div.photobooth-buttons {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+
+        & button {
+            box-shadow: none;
+            border: 1px solid var(--colour-gold);
+            background-color: transparent;
+            color: var(--colour-gold);
+            border-radius: 4px;
+            transition: background-color 0.3s, color 0.3s, transform 0.3s;
+
+            &:hover {
+                background-color: var(--colour-gold);
+                color: var(--colour-background);
+                transform: scale(1.02);
+            }
+
+            &:last-of-type{
+                grid-column: span 2;
+                background-color: var(--colour-red);
+                color: var(--colour-background);
+
+                &:hover {
+                    color: var(--colour-background);
+                    transform: scale(1.02);
+                }
+            }
+        }
+    }
+
+    @media (max-width: 600px){
+        .photobooth-div {
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            
+            & video {
+                width: 100%;
+            }
+
+            & .photobooth-buttons-container{
+                align-items: start;
+                text-align: center;
+                width: 100%;
+            }
+        }
+
+        .photobooth-container{
+            padding: var(--size-2xl) var(--size-2xl);
+        }
+    }
+
 
 </style>
 
 <script>
-    // https://codepen.io/pandaa/pen/OJNVgYp?editors=0010
-
     const video = document.querySelector(".player");
     const canvas = document.createElement("canvas");
     const takePhotoBtn = document.querySelector(".button-capture");
     const popup = document.querySelector(".popup");
     const popupFoto = document.querySelector(".popup-foto");
-    const popupSluiten = document.querySelector(".popup-sluiten");
+    const popupGebruiken = document.querySelector(".popup-gebruiken");
+    const popupOpnieuw = document.querySelector(".popup-opnieuw");
 
     let mediastream = null;
 
+    const filterBtns = document.querySelectorAll(".photobooth-buttons button:not(.button-capture)");
+
+    // https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/filter
+    filterBtns.forEach(btn => {
+        btn.addEventListener("click", () => {
+            const filterMap = {
+                "no filter": "none",
+                "grayscale": "grayscale(100%)",
+                "sepia":     "sepia(100%)",
+            };
+            // het neemt expliciet de tekst van de knop om te bepalen welke filter er moet worden toegepast, als er geen match is wordt er "none" toegepast
+            video.style.filter = filterMap[btn.textContent] ?? "none";
+        });
+    });
+
     function getVideo() {
+        // het vragen van toegang tot de webcam en geen audio
         navigator.mediaDevices
             .getUserMedia({ video: true, audio: false })
             .then((localMediaStream) => {
-                mediastream = localMediaStream;
+                // het opslaan van de mediastream en dat koppelen aan <video> en dan video afspelen
+                mediastream = localMediaStream; 
                 video.srcObject = mediastream;
                 video.play();
             })
@@ -192,12 +293,15 @@ const movies = tmdbData.results;
     getVideo();
 
     function takePhoto() {
+        // https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API
+        // https://codepen.io/pandaa/pen/OJNVgYp?editors=0010
         const width = video.videoWidth || video.offsetWidth;
         const height = video.videoHeight || video.offsetHeight;
         canvas.width = width;
         canvas.height = height;
 
         const ctx = canvas.getContext("2d");
+        ctx.filter = video.style.filter || "none";
         ctx.translate(width, 0);
         ctx.scale(-1, 1);
         ctx.drawImage(video, 0, 0, width, height);
@@ -205,10 +309,33 @@ const movies = tmdbData.results;
         const data = canvas.toDataURL("image/jpeg");
         popupFoto.src = data;
         popup.classList.add("actief");
+
+        // localStorage.setItem('boothPhoto', data);
     }
 
     takePhotoBtn.addEventListener("click", takePhoto); 
-    popupSluiten.addEventListener("click", () => {
+
+    popupGebruiken.addEventListener("click", () => {
+        localStorage.setItem('boothPhoto', popupFoto.src);
+        popup.classList.remove("actief");
+
+        // Slaat de foto op in localStorage en sluit de popup
+        const naam = localStorage.getItem('lastName');
+        const stemming = localStorage.getItem('lastMood');
+        const pokemon = localStorage.getItem('lastPokemon');
+        
+        // Haalt de eerder opgeslagen naam, stemming en pokemon op
+        let url = '/results';
+        const params = new URLSearchParams();
+        if (naam) params.set('name', naam);
+        if (stemming) params.set('mood', stemming);
+        if (pokemon) params.set('pokemon', pokemon);
+        if (params.toString()) url += '?' + params.toString();
+        
+        window.location.href = url;
+    });
+
+    popupOpnieuw.addEventListener("click", () => {
         popup.classList.remove("actief");
     });
 

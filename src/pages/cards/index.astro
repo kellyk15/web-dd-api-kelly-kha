@@ -1,7 +1,7 @@
 ---
 import MainLayout from '../../layouts/MainLayout.astro';
 
-const res = await fetch('https://pokeapi.co/api/v2/pokemon?limit=50')
+const res = await fetch('https://pokeapi.co/api/v2/pokemon?limit=151')
 const data = await res.json()
 
 const pokemonWithSprites = await Promise.all(
@@ -19,8 +19,8 @@ const pokemonWithSprites = await Promise.all(
 
 <MainLayout title="Kunstvangst">
 	<section class="collection">
-		<h2>Jouw <em>collectie</em></h2>
-		<p>Hier zijn enkele kaarten die je hebt gevangen</p>
+		<h2>De <em>collectie</em></h2>
+		<p>Hier zijn de pokemons die je kan vangen</p>
 		<ul>
 			{pokemonWithSprites.map((pokemon) => (
 			<li>

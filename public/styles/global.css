@@ -303,7 +303,8 @@ nav ul{
 
 
 /* ── COLLECTION STYLING ── */
-.collection{
+.collection,
+.collection-cards {
     margin: 0 var(--size-2xl) var(--size-4xl) var(--size-2xl);
     text-align: center;
 
@@ -412,3 +413,5 @@ nav ul{
     width: 100%;
     padding: var(--size-3xl) var(--size-6xl);
 }
+
+
